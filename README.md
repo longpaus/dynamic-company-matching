@@ -1,4 +1,24 @@
 
+## Why Need This?
+Matching company names across different datasets is a common but challenging task due to:
+
+*   **Variations in Naming:** Companies might be listed with their legal name, trading name, abbreviations, or include/exclude suffixes like "Ltd," "Inc.," "Pty."
+*   **Typos and Formatting Issues:** Data entry errors, inconsistent capitalization, or extra spaces can make exact matching impossible.
+*   **Subsidiaries and Parent Companies:** Identifying relationships where one name is a part of another, or a subsidiary.
+*   **Scale:** Manually matching thousands or millions of company names is impractical.
+
+This project helps solve these challenges by:
+
+*   **Improving Data Quality:** By accurately linking company records, you can enrich your datasets, remove duplicates, and get a cleaner view of your company data.
+*   **Automating a Tedious Process:** Saves significant manual effort and time compared to traditional methods.
+*   **Leveraging AI for Nuance:** Goes beyond simple string similarity by using AI to understand context, common abbreviations, and semantic relationships between names.
+*   **Providing Transparency:** The AI's confidence score and explanation offer insights into why a match was made (or not made), allowing for review and trust in the results.
+*   **Use Cases:**
+    *   **CRM/Salesforce Data Cleaning:** Deduplicating and standardizing company names in customer relationship management systems.
+    *   **Lead Enrichment:** Matching leads from external lists to existing accounts.
+    *   **Supply Chain Management:** Identifying unique suppliers or customers across different purchasing systems.
+    *   **Financial Analysis:** Consolidating company information from various financial data sources.
+    *   **Market Research:** Identifying unique entities in large company databases.
 ## Prerequisites
 
 *   Python 3.7+
