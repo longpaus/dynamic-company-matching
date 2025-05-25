@@ -3,6 +3,7 @@ import os
 from tqdm import tqdm
 from rapidfuzz import process, fuzz
 import re
+import json
 
 def _find_matches(name:str, candidates:list, threshold:int=None):
     """Find fuzzy matches for a company name"""
@@ -98,7 +99,7 @@ def perform_fuzzy_matching(args:dict):
             new_row_data = {
                 'id':row[args['source_id']],
                 'name':source_name,
-                'matches': ','.join(original_matches)
+                'matches': json.dumps(original_matches)
             }
             results_list.append(new_row_data)
         

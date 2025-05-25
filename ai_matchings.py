@@ -116,7 +116,7 @@ def perform_batch_ai_matching(
         for _, row in batch.iterrows():
             task = {
                 "input_name": row['name'],
-                "company_list": row['matches'].split(',') if isinstance(row['matches'], str) else []
+                "company_list": json.loads(row['matches']) if isinstance(row['matches'], str) else []
             }
             matching_tasks.append(task)
             ids_in_batch.append(row['id'])
