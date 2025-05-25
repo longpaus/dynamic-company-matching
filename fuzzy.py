@@ -19,12 +19,14 @@ def _find_matches(name:str, candidates:list, threshold:int=None):
     
     return [(match[0], match[1]) for match in matches]
 
-def _build_common_terms_pattern(common_terms_list):
+def _build_common_terms_pattern(common_terms_list:list[str])->str:
     # Escape each term for regex, join with |, and wrap with word boundaries
+    if not common_terms_list:
+        return ""
     pattern = r'\\b(' + '|'.join(re.escape(term) for term in common_terms_list) + r')\\b'
     return pattern
 
-def _clean_company_name(name:str, common_terms_pattern:str):
+def _clean_company_name(name:str, common_terms_pattern:str)->str:
     """Clean company name by removing common terms and normalizing whitespace"""
     if pd.isna(name):
         return ""
