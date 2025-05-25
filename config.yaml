@@ -1,0 +1,169 @@
+# Configuration for dynamic_company_matching.py
+source: "tpb_companies.csv"
+target: "tpb_companies.csv"
+source_id: "Agent"
+source_name: "Trading Name|Agent|Name"
+target_id: "Agent"
+api_key: "GOOGLE_API_KEY"
+match_threshold: 50
+model: "gemini-2.0-flash"
+fuzzy_output: "data/fuzzy_matches.csv"
+match_status: "data/match_status.csv"
+run_fuzzy: true
+run_ai: true
+batch_sizes:
+  - 10
+  - 5
+  - 1
+common_terms_list:
+  - pty
+  - ltd
+  - limited
+  - inc
+  - corp
+  - llc
+  - llp
+  - co
+  - abn
+  - acn
+  - accountant
+  - accountants
+  - accounting
+  - chartered
+  - advisor
+  - advisors
+  - advice
+  - financial
+  - super
+  - superannuation
+  - trust
+  - trustee
+  - business
+  - services
+  - solutions
+  - systems
+  - consulting
+  - consultants
+  - enterprises
+  - ventures
+  - technologies
+  - tech
+  - digital
+  - group
+  - associates
+  - partners
+  - professional
+  - executive
+  - industries
+  - developments
+  - management
+  - trading
+  - agency
+  - agencies
+  - company
+  - corporation
+  - organisation
+  - organization
+  - network
+  - logistics
+  - support
+  - source
+  - sourcing
+  - direct
+  - planning
+  - strategies
+  - strategy
+  - institute
+  - centre
+  - center
+  - shop
+  - store
+  - factory
+  - workshop
+ai_prompt: |
+  You are a highly skilled data matching assistant. Your primary function is to process a list of company matching tasks. For each task, you must determine whether the given `input_name` refers to the same entity as any company in its corresponding `company_list`. You need to consider variations like abbreviations, trading names, legal suffixes (e.g., Ltd, Inc, PLC), missing/extra words, and minor formatting differences.
+
+  You will be provided with a list of tasks, where each task contains:
+  - An `input_name` (the company name to be matched).
+  - A `company_list` (a list of potential company names to match against).
+  For each task you process, you must return the following information:
+  - Input Name Processed: The original `input_name` for that task.
+  - Match: The best matching company name from the `company_list`. If no reasonable match is found, return "No match."
+  - Confidence: A confidence level for the match (High / Medium / Low). Indicates how confident you are in your answer.
+  - Explanation: A brief explanation for your decision, highlighting why it's a match (e.g., abbreviation, strong keyword overlap, common trading name) or why it's not.
+
+  Process all tasks provided in the input.
+
+  Here are the company matching tasks:
+  {batch_matching_tasks}
+
+  # Example Input:
+  Provided `batch_matching_tasks`:
+  [
+    {{
+      "input_name": "AWS",
+      "company_list": [
+        "Amazon Web Services, Inc.",
+        "Microsoft Corporation",
+        "Google LLC"
+      ]
+    }},
+    {{
+      "input_name": "Swag Bookkeeping",
+      "company_list": [
+        "SmartEgg Bookkeeping",
+        "SBES Bookkeeping",
+        "SBST Bookkeeping",
+        "CKF Bookkeeping",
+        "L&B Bookkeeping"
+      ]
+    }},
+    {{
+      "input_name": "Tech Solutions Intl.",
+      "company_list": [
+        "Technology Solutions International PLC",
+        "Global Tech Corp",
+        "Innovative Solutions Ltd"
+      ]
+    }},
+    {{
+      "input_name": "360Private Pty Ltd",
+      "company_list": [
+        "360Private Wealth By Design Pty Ltd",
+      "Arizene Pty Ltd",
+      "Braemac Pty Ltd",
+      "Jista Pty Ltd",
+        "Haydon Drive Pty Ltd"
+      ]
+    }}
+  ]
+  # Expected Output:
+
+  [
+    {{
+      "Input Name Processed": "AWS",
+      "Match": "Amazon Web Services, Inc.",
+      "Confidence": "High",
+      "Explanation": "\"AWS\" is a widely known abbreviation for Amazon Web Services."
+    }},
+    {{
+      "Input Name Processed": "Swag Bookkeeping",
+      "Match": "No match",
+      "Confidence": "Low",
+      "Explanation": "\"Swag Bookkeeping\" does not closely resemble any listed names. No abbreviation, keyword, or known brand relationship supports a match."
+    }},
+    {{
+      "Input Name Processed": "Tech Solutions Intl.",
+      "Match": "Technology Solutions International PLC",
+      "Confidence": "High",
+      "Explanation": "\"Tech Solutions Intl.\" is a common abbreviation and informal representation of \"Technology Solutions International PLC\". \"Intl.\" maps to \"International\" and the core phrase \"Tech Solutions\" matches."
+    }},
+    {{
+      "Input Name Processed": "360Private Pty Ltd",
+      "Match": "360Private Wealth By Design Pty Ltd",
+      "Confidence": "High",
+      "Explanation": "The input name \"360Private Pty Ltd\" is a shortened or alternate trading name that likely refers to 360Private Wealth By Design Pty Ltd. They both start with \"360Private,\" suggesting a strong branding or naming match. The rest of the name in the listed company appears to be a tagline or business unit descriptor (\"Wealth By Design\"), which is commonly dropped in casual or trading use."
+    }}
+  ]
+
+  Please return only the JSON array, with no markdown formatting, no triple backticks, and no extra commentary. Do not wrap the output in ```json or any other code block.
