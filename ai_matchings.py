@@ -1,3 +1,4 @@
+import sys
 import os
 import json
 import time
@@ -137,8 +138,18 @@ def perform_batch_ai_matching(
             )
             time.sleep(6) # Rate limiting
         except Exception as e:
-            print(f"Error calling AI API for sample {i} to {i+batch_sz}: {str(e)}")
-            for row_id in ids_in_batch: 
+            error_message = str(e)
+            print(f"Error calling AI API for sample {i} to {i+batch_sz}: {error_message}")
+            if "RESOURCE_EXHAUSTED" in error_message:
+                print("Resource exhausted. Saving progress and exiting.")
+                for row_id in ids_in_batch:
+                    row = match_status_df[match_status_df['id'] == row_id]
+                    if not row.empty:
+                        _update_match_status(match_status_df, row_id, False, pd.NA, pd.NA, pd.NA,pd.NA)
+                match_status_df.to_csv(args['match_status'], index=False, encoding='utf-8')
+                sys.exit("Exited due to API resource exhaustion.")
+            # For other errors, mark current batch items and continue
+            for row_id in ids_in_batch:
                 row = match_status_df[match_status_df['id'] == row_id]
                 if not row.empty:
                     _update_match_status(match_status_df, row_id, False, batch_sz, pd.NA, pd.NA,pd.NA)
